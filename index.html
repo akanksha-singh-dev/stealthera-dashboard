@@ -168,6 +168,17 @@
       </div>
 
       <div class="header-right">
+        <!-- Temperature Unit Toggle -->
+        <div class="temp-unit-toggle" role="group" aria-label="Temperature unit selection">
+          <button class="unit-toggle-btn active" id="btnTempC" data-unit="C" title="Display temperature in Celsius">°C</button>
+          <button class="unit-toggle-btn" id="btnTempF" data-unit="F" title="Display temperature in Fahrenheit">°F</button>
+        </div>
+
+        <div class="header-partner-pill" title="MatrixCare Post-Acute Pilot Integration Ready">
+          <span class="partner-dot"></span>
+          <span>MatrixCare Pilot</span>
+        </div>
+
         <div class="header-meta" id="headerLastUpdated">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             aria-hidden="true">
@@ -266,6 +277,194 @@
             <div class="rdb-value rdb-note" id="rdbBaselineNote">—</div>
           </div>
         </div>
+
+        <!-- HERO AI CLINICAL SYNTHESIS FOR FLOOR NURSE -->
+        <section class="ai-hero-card" id="aiHeroCard" aria-label="AI Nurse Shift Briefing">
+          <div class="ai-hero-header">
+            <div class="ai-hero-branding">
+              <div class="ai-sparkle-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+              </div>
+              <div class="ai-hero-title-group">
+                <div class="ai-hero-title-row">
+                  <h2 class="ai-hero-title">AI Clinical Synthesis &amp; Shift Briefing</h2>
+                  <span class="badge-ai-model">LLM Clinical Intelligence</span>
+                  <span class="badge-matrixcare">MatrixCare Pilot Ready</span>
+                </div>
+                <p class="ai-hero-subtitle">Synthesizing multi-signal biometrics into clear, plain-language guidance for floor nurses</p>
+              </div>
+            </div>
+
+            <div class="ai-hero-score-cluster">
+              <div class="stability-ring-container" title="Overall Patient Recovery & Stability Score (0-100)">
+                <svg class="stability-ring" width="68" height="68" viewBox="0 0 72 72">
+                  <circle class="ring-bg" cx="36" cy="36" r="30" />
+                  <circle class="ring-fg" id="heroStabilityRing" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="60" />
+                </svg>
+                <div class="stability-ring-text">
+                  <span class="stability-num" id="heroStabilityScore">—</span>
+                  <span class="stability-lbl">STABILITY</span>
+                </div>
+              </div>
+              <div class="hero-urgency-block">
+                <span class="hero-urgency-badge" id="heroUrgencyBadge">STAT Action</span>
+                <span class="hero-status-sub" id="heroStatusSub">Evaluating trajectory…</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Tab Navigation -->
+          <div class="ai-hero-nav" role="tablist" aria-label="AI Briefing Views">
+            <button class="ai-hero-tab active" data-tab="takeaway" id="tabBtnTakeaway" role="tab" aria-selected="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+              Nurse Shift Takeaway
+            </button>
+            <button class="ai-hero-tab" data-tab="checklist" id="tabBtnChecklist" role="tab" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+              Bedside Action Plan (<span id="heroChecklistCount">0</span>)
+            </button>
+            <button class="ai-hero-tab" data-tab="sbar" id="tabBtnSbar" role="tab" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              SBAR Escalation &amp; MatrixCare Note
+            </button>
+            <button class="ai-hero-tab" data-tab="copilot" id="tabBtnCopilot" role="tab" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              Why The AI Flagged This
+            </button>
+          </div>
+
+          <!-- Hero Tab Content Panels -->
+          <div class="ai-hero-body">
+            <!-- TAB 1: Nurse Takeaway -->
+            <div class="ai-tab-panel active" id="panelTakeaway" role="tabpanel">
+              <div class="hero-summary-grid">
+                <div class="hero-callout-box hero-callout-main">
+                  <div class="callout-header">
+                    <span class="callout-label">What This Means For Your Shift</span>
+                    <span class="callout-pill" id="heroShiftPill">Clinical Translation</span>
+                  </div>
+                  <p class="hero-prose-lg" id="heroWhatThisMeans">—</p>
+                </div>
+
+                <div class="hero-callout-box hero-callout-urgency">
+                  <div class="callout-header">
+                    <span class="callout-label">Clinical Urgency &amp; Adverse Risk</span>
+                    <span class="callout-pill pill-warn" id="heroUrgencyPill">Trajectory Warning</span>
+                  </div>
+                  <p class="hero-prose" id="heroWhyItMatters">—</p>
+                </div>
+              </div>
+
+              <!-- Bedside Patient Inquiry Prompts -->
+              <div class="hero-bedside-prompts">
+                <div class="prompt-title-row">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span class="prompt-title">Targeted Bedside Questions for Patient Rounding</span>
+                </div>
+                <div class="prompt-list" id="heroBedsideQuestions"></div>
+              </div>
+            </div>
+
+            <!-- TAB 2: Action Checklist -->
+            <div class="ai-tab-panel" id="panelChecklist" role="tabpanel">
+              <div class="checklist-header-bar">
+                <span class="cl-desc">Prioritized nursing interventions based on cross-signal risk fusion:</span>
+                <span class="cl-tracker" id="checklistTracker">0 of 0 completed</span>
+              </div>
+              <div class="interactive-checklist" id="heroChecklistItems"></div>
+            </div>
+
+            <!-- TAB 3: SBAR & MatrixCare Note -->
+            <div class="ai-tab-panel" id="panelSbar" role="tabpanel">
+              <div class="sbar-toolbar">
+                <div class="sbar-meta">
+                  <strong>SBAR Provider Communication &amp; MatrixCare EHR Note</strong>
+                  <span>Formatted for rapid physician paging, provider rounds, or shift handover</span>
+                </div>
+                <div class="sbar-btn-group">
+                  <button class="btn-ghost btn-ghost-small" id="btnCopySbar" title="Copy SBAR to clipboard">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Copy SBAR
+                  </button>
+                  <button class="btn-primary-clinical btn-small" id="btnCopyMatrixCare" title="Copy formatted note ready for MatrixCare EHR">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                    </svg>
+                    Copy to MatrixCare EHR
+                  </button>
+                </div>
+              </div>
+
+              <div class="sbar-grid">
+                <div class="sbar-card">
+                  <span class="sbar-badge sbar-s">S</span>
+                  <div class="sbar-content">
+                    <strong class="sbar-label">Situation</strong>
+                    <p id="sbarSituation">—</p>
+                  </div>
+                </div>
+                <div class="sbar-card">
+                  <span class="sbar-badge sbar-b">B</span>
+                  <div class="sbar-content">
+                    <strong class="sbar-label">Background</strong>
+                    <p id="sbarBackground">—</p>
+                  </div>
+                </div>
+                <div class="sbar-card">
+                  <span class="sbar-badge sbar-a">A</span>
+                  <div class="sbar-content">
+                    <strong class="sbar-label">Assessment</strong>
+                    <p id="sbarAssessment">—</p>
+                  </div>
+                </div>
+                <div class="sbar-card">
+                  <span class="sbar-badge sbar-r">R</span>
+                  <div class="sbar-content">
+                    <strong class="sbar-label">Recommendation</strong>
+                    <p id="sbarRecommendation">—</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 4: Copilot / Explainability -->
+            <div class="ai-tab-panel" id="panelCopilot" role="tabpanel">
+              <div class="copilot-grid">
+                <div class="copilot-card">
+                  <h4 class="copilot-title">Differential Considerations</h4>
+                  <ul class="copilot-list" id="heroDifferentials"></ul>
+                </div>
+                <div class="copilot-card">
+                  <h4 class="copilot-title">Cross-Signal Context Explained</h4>
+                  <div class="copilot-text" id="heroCrossSignalContext">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- Main two-column layout -->
         <div class="workspace-grid">
@@ -744,6 +943,16 @@
         <pre id="fhirJsonContent"></pre>
       </div>
     </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="toast-notification hidden" role="alert" aria-live="polite">
+    <div class="toast-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </div>
+    <div class="toast-message" id="toastMessage">Copied to clipboard</div>
   </div>
 
   <script type="module" src="./src/ui/app.js"></script>

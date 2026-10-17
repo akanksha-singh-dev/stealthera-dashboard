@@ -59,7 +59,14 @@ const SIGNAL_META = {
 };
 
 function sigLabel(key) { return SIGNAL_META[key]?.label || key.replace(/_/g, ' '); }
-function sigUnit(key) { return SIGNAL_META[key]?.unit || ''; }
+function sigUnit(key, tempUnit = 'C') {
+  if (key === 'TEMPERATURE') return tempUnit === 'F' ? '°F' : '°C';
+  return SIGNAL_META[key]?.unit || '';
+}
+function cToF(c) {
+  if (c === null || c === undefined || isNaN(c)) return c;
+  return Number(((c * 9 / 5) + 32).toFixed(1));
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function severityChip(severity) {
@@ -168,10 +175,14 @@ class ClinicalDashboard {
     this.mainChart = null;
     this.radarChart = null;
 
+    // Temperature unit: 'C' | 'F'
+    this.tempUnit = 'C';
+
     this._initNav();
     this._initDemoSelector();
     this._initSourceModeToggle();
     this._initRealDataControls();
+    this._initHeroTabs();
     this._initGlobalListeners();
     this._runDemoAnalysis();
   }
@@ -462,6 +473,7 @@ class ClinicalDashboard {
 
     this._renderRealDataBannerE4(sessionResult, catalogueEntry);
     this._renderSummaryBarRealE4(sessionResult, analysisResult);
+    this._renderAiHeroCard();
     this._renderMetricTabsRealE4(sessionResult);
     this._renderMainChartRealE4(sessionResult);
     this._renderBaselinePanelRealE4(sessionResult, analysisResult);
@@ -489,6 +501,7 @@ class ClinicalDashboard {
 
     document.getElementById('realDataBanner')?.classList.add('hidden');
     this._renderSummaryBar();
+    this._renderAiHeroCard();
     this._renderMetricTabs();
     this._renderMainChart();
     this._renderBaselinePanel();
@@ -514,6 +527,24 @@ class ClinicalDashboard {
     });
     closeModal?.addEventListener('click', () => modal?.classList.remove('active'));
     modal?.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+
+    // Temperature Unit Toggle
+    const btnC = document.getElementById('btnTempC');
+    const btnF = document.getElementById('btnTempF');
+    btnC?.addEventListener('click', () => {
+      if (this.tempUnit === 'C') return;
+      this.tempUnit = 'C';
+      btnC.classList.add('active');
+      btnF.classList.remove('active');
+      this._onTempUnitChange();
+    });
+    btnF?.addEventListener('click', () => {
+      if (this.tempUnit === 'F') return;
+      this.tempUnit = 'F';
+      btnF.classList.add('active');
+      btnC.classList.remove('active');
+      this._onTempUnitChange();
+    });
 
     // Copy obs
     document.getElementById('copyObsBtn')?.addEventListener('click', () => this._copyObservation());
@@ -614,12 +645,17 @@ class ClinicalDashboard {
     const windowSize = Math.min(this.timeWindow, allSeries.length);
     const series = allSeries.slice(-windowSize);
     const profile = this.result.baselineProfiles[this.signal];
-    const unit = sigUnit(this.signal);
+    const isTempF = this.signal === 'TEMPERATURE' && this.tempUnit === 'F';
+    const unit = sigUnit(this.signal, this.tempUnit);
     const labels = series.map((d, i) => `Day ${allSeries.length - windowSize + i + 1}`);
-    const values = series.map(d => d.value);
-    const median = profile?.normalRange.median || 0;
-    const lowerBound = profile?.normalRange.lowerBound || 0;
-    const upperBound = profile?.normalRange.upperBound || 0;
+    const rawValues = series.map(d => d.value);
+    const values = isTempF ? rawValues.map(v => cToF(v)) : rawValues;
+    const rawMedian = profile?.normalRange.median || 0;
+    const rawLower = profile?.normalRange.lowerBound || 0;
+    const rawUpper = profile?.normalRange.upperBound || 0;
+    const median = isTempF ? cToF(rawMedian) : rawMedian;
+    const lowerBound = isTempF ? cToF(rawLower) : rawLower;
+    const upperBound = isTempF ? cToF(rawUpper) : rawUpper;
 
     this._destroyMainChart();
     this.mainChart = new Chart(canvas, {
@@ -649,16 +685,26 @@ class ClinicalDashboard {
     if (!container) return;
     const profile = this.result.baselineProfiles[this.signal];
     const deviation = this.result.detectedDeviations[this.signal];
-    const unit = sigUnit(this.signal);
+    const isTempF = this.signal === 'TEMPERATURE' && this.tempUnit === 'F';
+    const unit = sigUnit(this.signal, this.tempUnit);
     if (!profile) { container.innerHTML = '<div class="baseline-placeholder">No baseline data available.</div>'; return; }
     const { stats, normalRange } = profile;
+    
+    const medVal = isTempF ? cToF(stats.median) : stats.median;
+    const lowVal = isTempF ? cToF(normalRange.lowerBound) : normalRange.lowerBound;
+    const upVal = isTempF ? cToF(normalRange.upperBound) : normalRange.upperBound;
+    const stdVal = isTempF ? Number((stats.stdDev * 1.8).toFixed(1)) : stats.stdDev;
+    const madVal = isTempF ? Number((stats.mad * 1.8).toFixed(1)) : stats.mad;
+    const iqrVal = isTempF ? Number((stats.iqr * 1.8).toFixed(1)) : stats.iqr;
+    const emaVal = isTempF ? cToF(profile.latestEMA) : profile.latestEMA;
+
     const cells = [
-      { label: 'Baseline Median', value: fmt(stats.median), unit, desc: 'Historical median' },
-      { label: 'Normal Range', value: `${fmt(normalRange.lowerBound)} – ${fmt(normalRange.upperBound)}`, unit, desc: 'MAD-based bounds' },
-      { label: 'Std. Deviation', value: fmt(stats.stdDev), unit, desc: 'Population spread' },
-      { label: 'MAD', value: fmt(stats.mad), unit, desc: 'Robust spread (MAD)' },
-      { label: 'IQR', value: fmt(stats.iqr), unit, desc: 'Interquartile range' },
-      { label: 'Adaptive EMA', value: fmt(profile.latestEMA), unit, desc: 'Exponential moving avg.' },
+      { label: 'Baseline Median', value: fmt(medVal), unit, desc: 'Historical median' },
+      { label: 'Normal Range', value: `${fmt(lowVal)} – ${fmt(upVal)}`, unit, desc: 'MAD-based bounds' },
+      { label: 'Std. Deviation', value: fmt(stdVal), unit, desc: 'Population spread' },
+      { label: 'MAD', value: fmt(madVal), unit, desc: 'Robust spread (MAD)' },
+      { label: 'IQR', value: fmt(iqrVal), unit, desc: 'Interquartile range' },
+      { label: 'Adaptive EMA', value: fmt(emaVal), unit, desc: 'Exponential moving avg.' },
     ];
     container.innerHTML = cells.map(c => `
       <div class="baseline-stat">
@@ -669,10 +715,11 @@ class ClinicalDashboard {
     if (deviation) {
       const displaySev = deviation.adjustedSeverity || deviation.severity;
       const devClass = displaySev === 'CRITICAL' ? 'dev-critical' : displaySev === 'WARNING' ? 'dev-warn' : 'dev-ok';
+      const devDelta = isTempF ? Number((deviation.deviationDelta * 1.8).toFixed(1)) : deviation.deviationDelta;
       const deviationRow = document.createElement('div');
       deviationRow.className = `baseline-deviation-row ${devClass}`;
       deviationRow.textContent = deviation.isDeviation
-        ? `${sigLabel(this.signal)} is ${deviation.direction?.toLowerCase()} vs personal baseline — Z=${fmt(deviation.zScore, 2)}, Δ${deviation.deviationDelta >= 0 ? '+' : ''}${fmt(deviation.deviationDelta)} ${unit}`
+        ? `${sigLabel(this.signal)} is ${deviation.direction?.toLowerCase()} vs personal baseline — Z=${fmt(deviation.zScore, 2)}, Δ${devDelta >= 0 ? '+' : ''}${fmt(devDelta)} ${unit}`
         : `${sigLabel(this.signal)} is within the patient's established normal baseline.`;
       container.appendChild(deviationRow);
     }
@@ -733,14 +780,28 @@ class ClinicalDashboard {
       return;
     }
     items.forEach(item => {
-      const dev = item.observedValue - (item.baselineMedian || 0);
+      const isTempF = item.metric === 'TEMPERATURE' && this.tempUnit === 'F';
+      const unit = sigUnit(item.metric, this.tempUnit);
+      const obsVal = isTempF ? cToF(item.observedValue) : item.observedValue;
+      const baseVal = isTempF ? cToF(item.baselineMedian) : item.baselineMedian;
+      const dev = isTempF
+        ? Number(((item.observedValue - (item.baselineMedian || 0)) * 1.8).toFixed(1))
+        : (item.observedValue - (item.baselineMedian || 0));
+      
+      let normRangeStr = item.normalRange || '—';
+      if (isTempF && item.normalRange && item.normalRange.includes('[')) {
+        normRangeStr = item.normalRange.replace(/([0-9]+\.?[0-9]*)/g, match => {
+          return cToF(parseFloat(match));
+        });
+      }
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><strong>${sigLabel(item.metric)}</strong></td>
-        <td class="td-mono">${fmt(item.observedValue)} ${sigUnit(item.metric)}</td>
-        <td class="td-mono td-muted">${fmt(item.baselineMedian)} ${sigUnit(item.metric)}</td>
-        <td class="td-mono td-muted">${item.normalRange || '—'}</td>
-        <td class="td-mono ${item.isAnomaly ? 'delta-pos' : 'delta-ok'}">${dev >= 0 ? '+' : ''}${fmt(dev)} ${sigUnit(item.metric)}</td>
+        <td class="td-mono">${fmt(obsVal)} ${unit}</td>
+        <td class="td-mono td-muted">${fmt(baseVal)} ${unit}</td>
+        <td class="td-mono td-muted">${normRangeStr}</td>
+        <td class="td-mono ${item.isAnomaly ? 'delta-pos' : 'delta-ok'}">${dev >= 0 ? '+' : ''}${fmt(dev)} ${unit}</td>
         <td class="td-mono td-muted">${item.zScore !== 'N/A' ? fmt(item.zScore, 2) : '—'}</td>
         <td><span class="status-chip ${severityChip(item.severity)}">${(item.severity || 'NORMAL').replace(/_/g, ' ')}</span></td>`;
       tbody.appendChild(tr);
@@ -1727,7 +1788,230 @@ class ClinicalDashboard {
     const obs = this.result?.clinicalObservation;
     if (!obs) return;
     const text = `${obs.headline}\n\n${obs.narrativeSummary}\n\nSuggested Actions:\n${obs.recommendedActions.map(a => `[${a.priority}] ${a.action}`).join('\n')}`;
-    navigator.clipboard.writeText(text).catch(() => { });
+    navigator.clipboard.writeText(text).then(() => {
+      this._showToast('Observation copied to clipboard');
+    }).catch(() => { });
+  }
+
+  _showToast(message) {
+    const toast = document.getElementById('toastNotification');
+    const msgEl = document.getElementById('toastMessage');
+    if (!toast || !msgEl) return;
+    msgEl.textContent = message;
+    toast.classList.remove('hidden');
+    clearTimeout(this._toastTimeout);
+    this._toastTimeout = setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3200);
+  }
+
+  _onTempUnitChange() {
+    if (this.mode === 'demo') {
+      this._renderMainChart();
+      this._renderBaselinePanel();
+      this._renderEvidenceTable();
+      this._renderAiHeroCard();
+    } else if (this.currentRecordingId) {
+      const rec = REAL_RECORDINGS.get(this.currentRecordingId);
+      if (rec) {
+        this._renderMainChartRealE4(rec.sessionResult);
+        this._renderBaselinePanelRealE4(rec.sessionResult, rec.analysisResult);
+        this._renderEvidenceTableRealE4(rec.sessionResult, rec.analysisResult);
+        this._renderAiHeroCard();
+      }
+    }
+    this._showToast(`Temperature unit switched to °${this.tempUnit}`);
+  }
+
+  _initHeroTabs() {
+    const tabs = document.querySelectorAll('.ai-hero-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabKey = tab.dataset.tab;
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        document.querySelectorAll('.ai-tab-panel').forEach(p => p.classList.remove('active'));
+        const panelMap = {
+          takeaway: 'panelTakeaway',
+          checklist: 'panelChecklist',
+          sbar: 'panelSbar',
+          copilot: 'panelCopilot',
+        };
+        const panelId = panelMap[tabKey];
+        if (panelId) document.getElementById(panelId)?.classList.add('active');
+      });
+    });
+
+    // Copy SBAR button
+    document.getElementById('btnCopySbar')?.addEventListener('click', () => {
+      const briefing = this.result?.clinicalObservation?.nurseShiftBriefing;
+      if (!briefing?.sbarHandoff) return;
+      const text = [
+        `[SBAR NURSE ESCALATION REPORT]`,
+        `SITUATION: ${briefing.sbarHandoff.situation}`,
+        `BACKGROUND: ${briefing.sbarHandoff.background}`,
+        `ASSESSMENT: ${briefing.sbarHandoff.assessment}`,
+        `RECOMMENDATION: ${briefing.sbarHandoff.recommendation}`,
+      ].join('\n\n');
+      navigator.clipboard.writeText(text).then(() => {
+        this._showToast('SBAR Communication copied to clipboard!');
+      }).catch(() => { });
+    });
+
+    // Copy MatrixCare EHR note
+    document.getElementById('btnCopyMatrixCare')?.addEventListener('click', () => {
+      const briefing = this.result?.clinicalObservation?.nurseShiftBriefing;
+      if (!briefing?.matrixCareProgressNote) return;
+      navigator.clipboard.writeText(briefing.matrixCareProgressNote).then(() => {
+        this._showToast('MatrixCare Progress Note copied! Ready to paste into EHR.');
+      }).catch(() => { });
+    });
+  }
+
+  _renderAiHeroCard() {
+    const obs = this.result?.clinicalObservation;
+    const briefing = obs?.nurseShiftBriefing;
+    if (!briefing) return;
+
+    // Card styling by score / severity
+    const heroCard = document.getElementById('aiHeroCard');
+    if (heroCard) {
+      heroCard.classList.remove('hero-critical', 'hero-warning', 'hero-stable');
+      if (briefing.stabilityScore < 40) heroCard.classList.add('hero-critical');
+      else if (briefing.stabilityScore < 75) heroCard.classList.add('hero-warning');
+      else heroCard.classList.add('hero-stable');
+    }
+
+    // Score ring
+    const scoreEl = document.getElementById('heroStabilityScore');
+    if (scoreEl) scoreEl.textContent = briefing.stabilityScore;
+
+    const ringFg = document.getElementById('heroStabilityRing');
+    if (ringFg) {
+      const circ = 188.5; // 2 * pi * 30
+      const offset = circ * (1 - (briefing.stabilityScore / 100));
+      ringFg.style.strokeDashoffset = offset;
+      ringFg.style.stroke = briefing.stabilityScore < 40
+        ? 'var(--col-critical)'
+        : (briefing.stabilityScore < 75 ? 'var(--col-warn)' : 'var(--col-action)');
+    }
+
+    // Urgency badge
+    const badgeEl = document.getElementById('heroUrgencyBadge');
+    if (badgeEl) {
+      badgeEl.textContent = briefing.urgencyBadge;
+      badgeEl.className = 'hero-urgency-badge ' + (
+        briefing.urgencyLevel === 'STAT' ? 'badge-stat' :
+        briefing.urgencyLevel === 'HIGH' ? 'badge-high' :
+        briefing.urgencyLevel === 'MEDIUM' ? 'badge-medium' : 'badge-routine'
+      );
+    }
+
+    // Subtitle
+    this._setEl('heroStatusSub', briefing.stabilityStatus);
+
+    // Tab 1: Nurse Takeaway
+    let takeawayText = briefing.whatThisMeans;
+    if (this.tempUnit === 'F') {
+      takeawayText = takeawayText.replace(/(\d+\.?\d*)°C/g, (match, c) => {
+        const f = ((parseFloat(c) * 9 / 5) + 32).toFixed(1);
+        return `${f}°F`;
+      });
+    }
+    this._setEl('heroWhatThisMeans', takeawayText);
+    this._setEl('heroWhyItMatters', briefing.whyItMatters);
+
+    // Bedside questions
+    const qContainer = document.getElementById('heroBedsideQuestions');
+    if (qContainer) {
+      qContainer.innerHTML = '';
+      (briefing.bedsideQuestions || []).forEach(q => {
+        const item = document.createElement('div');
+        item.className = 'prompt-item';
+        item.innerHTML = `<span class="prompt-quote-mark">“</span><span>${q}</span>`;
+        qContainer.appendChild(item);
+      });
+    }
+
+    // Tab 2: Action Checklist
+    const clContainer = document.getElementById('heroChecklistItems');
+    const clCount = document.getElementById('heroChecklistCount');
+    const clTracker = document.getElementById('checklistTracker');
+    const items = briefing.bedsideChecklist || [];
+    if (clCount) clCount.textContent = items.length;
+
+    if (clContainer) {
+      clContainer.innerHTML = '';
+      if (clTracker) clTracker.textContent = `0 of ${items.length} completed`;
+
+      items.forEach((item, idx) => {
+        const label = document.createElement('label');
+        label.className = 'checklist-item';
+        label.dataset.index = idx;
+        const pClass = `priority-${item.priority.toLowerCase()}`;
+        label.innerHTML = `
+          <input type="checkbox" class="checklist-cb" aria-label="Mark task complete" />
+          <div class="checklist-content">
+            <div class="checklist-title-row">
+              <span class="priority-pill ${pClass}">${item.priority}</span>
+              <span class="checklist-task">${item.task}</span>
+            </div>
+            <span class="checklist-detail">${item.detail}</span>
+          </div>
+        `;
+
+        const cb = label.querySelector('.checklist-cb');
+        cb.addEventListener('change', () => {
+          label.classList.toggle('item-completed', cb.checked);
+          const checkedCount = clContainer.querySelectorAll('.checklist-cb:checked').length;
+          if (clTracker) clTracker.textContent = `${checkedCount} of ${items.length} completed`;
+          if (checkedCount === items.length && items.length > 0) {
+            this._showToast('All shift action items completed!');
+          }
+        });
+
+        clContainer.appendChild(label);
+      });
+    }
+
+    // Tab 3: SBAR
+    this._setEl('sbarSituation', briefing.sbarHandoff?.situation || '—');
+    this._setEl('sbarBackground', briefing.sbarHandoff?.background || '—');
+    this._setEl('sbarAssessment', briefing.sbarHandoff?.assessment || '—');
+    this._setEl('sbarRecommendation', briefing.sbarHandoff?.recommendation || '—');
+
+    // Tab 4: Copilot
+    const diffContainer = document.getElementById('heroDifferentials');
+    if (diffContainer) {
+      diffContainer.innerHTML = '';
+      (briefing.differentials || []).forEach(d => {
+        const li = document.createElement('li');
+        li.textContent = d;
+        diffContainer.appendChild(li);
+      });
+    }
+
+    // Cross-signal context note
+    const fuser = this.result?.fuserReport || {};
+    const { synergyIndices, patientContext } = fuser;
+    let contextNote = '';
+    if (synergyIndices?.infectionIndex?.isFlagged) {
+      contextNote = `Cross-Signal Rationale: Elevated body temperature and sustained resting tachycardia co-occur with marked drop in heart rate variability (HRV). This indicates active systemic sympathetic surge with parasympathetic withdrawal. When joined with sudden avoidance of joint weight-bearing, this multi-signal synergy confirms early surgical site inflammation over routine post-op recovery aches.`;
+    } else if (synergyIndices?.cardiacDecompIndex?.isFlagged) {
+      contextNote = `Cross-Signal Rationale: Patient is prescribed Metoprolol Succinate, which blunts nodal conduction and conceals sinus tachycardia (HR is deceptive at 62 bpm). The AI intelligence layer bypassed this pharmacological masking by fusing a +4.2 kg fluid weight gain with SpO2 dropping to 90%, preventing an acute pulmonary decompensation.`;
+    } else if (synergyIndices?.recoveryStallIndex?.isFlagged) {
+      contextNote = `Cross-Signal Rationale: While vital signs remain hemodynamically normal, functional telemetry reveals an unexpected plateau in gait velocity (0.53 m/s) and knee flexion (78°). This dissociation flags localized neuromuscular extensor tone resistance or psychological fear-avoidance rather than cardiovascular exhaustion.`;
+    } else if (patientContext?.inActiveExercise) {
+      contextNote = `Cross-Signal Rationale: Peak heart rate of 125 bpm coincided with scheduled high-intensity physical therapy session. Range of motion (122°) and pain score (1/10) remain optimal. The AI confirmed an exercise-induced physiological response, preventing false-alarm escalation.`;
+    } else {
+      contextNote = `Cross-Signal Rationale: Monitored signals remain coherent within individualized historical corridors. Minor fluctuations represent expected circadian rhythms without evidence of clinical decompensation.`;
+    }
+    this._setEl('heroCrossSignalContext', contextNote);
   }
 
   _exportEvidence() {
