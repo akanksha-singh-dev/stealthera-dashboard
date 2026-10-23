@@ -1,0 +1,1270 @@
+{
+  "generatedFrom": "tools/generate-synthetic-dataset.mjs",
+  "seed": 20260921,
+  "bandAgreement": 40,
+  "driverAgreement": 40,
+  "total": 40,
+  "rows": [
+    {
+      "id": "SYN-001",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "MODERATE",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Rehabilitation Progression",
+      "observedTrajectory": "RECOVERY_PLATEAU_STALLED",
+      "compositeRisk": 35,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 35,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "MILD",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "MILD",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-002",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-003",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-004",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "MILD",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-005",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-006",
+      "archetype": "expected_recovery",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "MODERATE",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Rehabilitation Progression",
+      "observedTrajectory": "RECOVERY_PLATEAU_STALLED",
+      "compositeRisk": 30,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 30,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "WARNING",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "MILD",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-007",
+      "archetype": "progress_steep_rom",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-008",
+      "archetype": "progress_steep_rom",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "MILD",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-009",
+      "archetype": "infection_ssi",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Systemic Infection / Inflammation Risk",
+      "observedDriver": "Systemic Infection / Inflammation Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 100,
+        "mechanicalJointIndex": 45,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "CRITICAL",
+        "HRV": "CRITICAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "MILD",
+        "DAILY_STEPS": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Systemic Infection / Inflammation Risk",
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-010",
+      "archetype": "infection_ssi",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Systemic Infection / Inflammation Risk",
+      "observedDriver": "Systemic Infection / Inflammation Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 100,
+        "mechanicalJointIndex": 45,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "CRITICAL",
+        "HRV": "WARNING",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "MILD",
+        "DAILY_STEPS": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Systemic Infection / Inflammation Risk",
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-011",
+      "archetype": "infection_ssi",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Systemic Infection / Inflammation Risk",
+      "observedDriver": "Systemic Infection / Inflammation Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 100,
+        "mechanicalJointIndex": 45,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "CRITICAL",
+        "HRV": "CRITICAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "MILD",
+        "DAILY_STEPS": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Systemic Infection / Inflammation Risk",
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-012",
+      "archetype": "infection_ssi",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Systemic Infection / Inflammation Risk",
+      "observedDriver": "Systemic Infection / Inflammation Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 100,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "CRITICAL",
+        "HRV": "CRITICAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Systemic Infection / Inflammation Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-013",
+      "archetype": "mechanical_arthrofibrosis",
+      "expectedBand": "HIGH",
+      "observedBand": "HIGH",
+      "expectedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedTrajectory": "MONITOR_WATCH",
+      "compositeRisk": 60,
+      "indexScores": {
+        "infectionIndex": 10,
+        "mechanicalJointIndex": 60,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "WARNING",
+        "PAIN_SCORE": "WARNING",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "WARNING",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-014",
+      "archetype": "mechanical_arthrofibrosis",
+      "expectedBand": "HIGH",
+      "observedBand": "HIGH",
+      "expectedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedTrajectory": "MONITOR_WATCH",
+      "compositeRisk": 60,
+      "indexScores": {
+        "infectionIndex": 10,
+        "mechanicalJointIndex": 60,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "WARNING",
+        "PAIN_SCORE": "WARNING",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-015",
+      "archetype": "mechanical_arthrofibrosis",
+      "expectedBand": "HIGH",
+      "observedBand": "HIGH",
+      "expectedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedDriver": "Mechanical Joint Impairment / Arthrofibrosis Risk",
+      "observedTrajectory": "MONITOR_WATCH",
+      "compositeRisk": 60,
+      "indexScores": {
+        "infectionIndex": 10,
+        "mechanicalJointIndex": 60,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "CRITICAL",
+        "PAIN_SCORE": "WARNING",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [
+        "Mechanical Joint Impairment / Arthrofibrosis Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-016",
+      "archetype": "cardiac_decomp",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 30,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 100,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-017",
+      "archetype": "cardiac_decomp",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 20,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 100,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "WARNING",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-018",
+      "archetype": "cardiac_decomp",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 100,
+      "indexScores": {
+        "infectionIndex": 30,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 100,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-019",
+      "archetype": "cardiac_masked_beta",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 81,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 81,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-020",
+      "archetype": "cardiac_masked_beta",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 81,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 81,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-021",
+      "archetype": "cardiac_masked_beta",
+      "expectedBand": "CRITICAL",
+      "observedBand": "CRITICAL",
+      "expectedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedDriver": "Cardiopulmonary Decompensation / Fluid Overload Risk",
+      "observedTrajectory": "SUBACUTE_DETERIORATION",
+      "compositeRisk": 81,
+      "indexScores": {
+        "infectionIndex": 15,
+        "mechanicalJointIndex": 20,
+        "cardiacDecompIndex": 81,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "WARNING",
+        "BODY_WEIGHT": "CRITICAL",
+        "SPO2": "CRITICAL",
+        "DAILY_STEPS": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "SWELLING_SCORE": "CRITICAL"
+      },
+      "flaggedIndices": [
+        "Cardiopulmonary Decompensation / Fluid Overload Risk"
+      ],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-022",
+      "archetype": "recovery_stall_plateau",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-023",
+      "archetype": "recovery_stall_plateau",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "MILD",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-024",
+      "archetype": "recovery_stall_plateau",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-025",
+      "archetype": "recovery_stall_decline",
+      "expectedBand": "MODERATE|HIGH",
+      "observedBand": "MODERATE",
+      "expectedDriver": "Rehabilitation Progression|Mechanical Joint Impairment / Arthrofibrosis Risk|Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 25,
+      "indexScores": {
+        "infectionIndex": 10,
+        "mechanicalJointIndex": 25,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "WARNING",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-026",
+      "archetype": "recovery_stall_decline",
+      "expectedBand": "MODERATE|HIGH",
+      "observedBand": "MODERATE",
+      "expectedDriver": "Rehabilitation Progression|Mechanical Joint Impairment / Arthrofibrosis Risk|Physiological Stability",
+      "observedDriver": "Rehabilitation Progression",
+      "observedTrajectory": "RECOVERY_PLATEAU_STALLED",
+      "compositeRisk": 30,
+      "indexScores": {
+        "infectionIndex": 30,
+        "mechanicalJointIndex": 25,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "CRITICAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "MILD",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-027",
+      "archetype": "exercise_benign",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 20,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "SPO2": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SWELLING_SCORE": "MILD"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-028",
+      "archetype": "exercise_benign",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 20,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 20,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "CRITICAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "SPO2": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-029",
+      "archetype": "artifact_terminal",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "ARTIFACT_NOISE",
+        "TEMPERATURE": "ARTIFACT_NOISE",
+        "HRV": "ARTIFACT_NOISE",
+        "PAIN_SCORE": "MILD",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "SPO2": "ARTIFACT_NOISE",
+        "BODY_WEIGHT": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 4,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-030",
+      "archetype": "artifact_terminal",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "ARTIFACT_NOISE",
+        "TEMPERATURE": "ARTIFACT_NOISE",
+        "HRV": "ARTIFACT_NOISE",
+        "PAIN_SCORE": "MILD",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "SPO2": "ARTIFACT_NOISE",
+        "BODY_WEIGHT": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 4,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-031",
+      "archetype": "artifact_contaminated_history",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "SPO2": "NORMAL",
+        "BODY_WEIGHT": "WARNING"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-032",
+      "archetype": "artifact_contaminated_history",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "SPO2": "ARTIFACT_NOISE",
+        "BODY_WEIGHT": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 1,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-033",
+      "archetype": "insufficient_data",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-034",
+      "archetype": "insufficient_data",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "MODERATE",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 25,
+      "indexScores": {
+        "infectionIndex": 10,
+        "mechanicalJointIndex": 25,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "PAIN_SCORE": "WARNING",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-035",
+      "archetype": "insufficient_data",
+      "expectedBand": "LOW|MODERATE",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability|Rehabilitation Progression",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-036",
+      "archetype": "missing_signals",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "MILD",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "SPO2": "NORMAL",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-037",
+      "archetype": "missing_signals",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "SPO2": "NORMAL",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-038",
+      "archetype": "missing_signals",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "SPO2": "NORMAL",
+        "DAILY_STEPS": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-039",
+      "archetype": "accelerated_recovery",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "NORMAL",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    },
+    {
+      "id": "SYN-040",
+      "archetype": "accelerated_recovery",
+      "expectedBand": "LOW",
+      "observedBand": "LOW",
+      "expectedDriver": "Physiological Stability",
+      "observedDriver": "Physiological Stability",
+      "observedTrajectory": "EXPECTED_RECOVERY",
+      "compositeRisk": 0,
+      "indexScores": {
+        "infectionIndex": 0,
+        "mechanicalJointIndex": 0,
+        "cardiacDecompIndex": 0,
+        "recoveryStallIndex": 0
+      },
+      "latestSeverities": {
+        "RESTING_HR": "NORMAL",
+        "TEMPERATURE": "NORMAL",
+        "HRV": "WARNING",
+        "KNEE_FLEXION_ROM": "NORMAL",
+        "PAIN_SCORE": "NORMAL",
+        "DAILY_STEPS": "NORMAL",
+        "GAIT_VELOCITY": "NORMAL",
+        "BODY_WEIGHT": "NORMAL",
+        "SPO2": "NORMAL",
+        "SWELLING_SCORE": "NORMAL"
+      },
+      "flaggedIndices": [],
+      "artifactSignalsRejected": 0,
+      "bandMatch": true,
+      "driverMatch": true
+    }
+  ]
+}

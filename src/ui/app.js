@@ -1,3 +1,4 @@
+import { BLANK_TEST_FLEET, parseDrPrasunTelemetry } from '../data/dr-prasun-adapter.js';
 /**
  * @file app.js
  * @description StealthEra Clinical Dashboard — dual-mode UI.
@@ -157,8 +158,13 @@ class ClinicalDashboard {
     this.engine = new LongitudinalHealthIntelligenceLayer();
     this.scenarios = getPatientScenarios();
 
-    // Mode: 'demo' | 'real'
-    this.mode = 'demo';
+    // Mode: 'fleet' | 'demo' | 'real'
+    this.mode = 'fleet';
+    this.fleetWatches = BLANK_TEST_FLEET;
+    this.selectedWatchId = 'DR001';
+    this.prasunData = parseDrPrasunTelemetry();
+    this.activeModule = 'Overview';
+    this.moduleCharts = {};
 
     // Demo state
     this.patient = this.scenarios[0];
@@ -175,8 +181,8 @@ class ClinicalDashboard {
     this.mainChart = null;
     this.radarChart = null;
 
-    // Temperature unit: 'C' | 'F'
-    this.tempUnit = 'C';
+    // Temperature unit: 'F' by default per Slide 4!
+    this.tempUnit = 'F';
 
     this._initNav();
     this._initDemoSelector();
@@ -184,6 +190,10 @@ class ClinicalDashboard {
     this._initRealDataControls();
     this._initHeroTabs();
     this._initGlobalListeners();
+    this._initFleetView();
+    this._initVerticalModuleNav();
+    this._renderFleetTable();
+    this._renderDeviceDetail('DR001');
     this._runDemoAnalysis();
   }
 
@@ -192,6 +202,7 @@ class ClinicalDashboard {
   // ═══════════════════════════════════════════════════════════════════════════
   _initNav() {
     const pageMap = {
+      navHealthData: 'pageHealthData',
       navMonitoring: 'pageMonitoring',
       navPatientMonitoring: 'pageMonitoring',
       navTrends: 'pageTrends',
@@ -199,14 +210,17 @@ class ClinicalDashboard {
       navReports: 'pageReports',
       navQuality: 'pageQuality',
       navFhir: 'pageFhir',
+      navFleetMap: 'pageHealthData',
+      navAlarmList: 'pageHealthData',
       navSettings: 'pageSettings',
     };
     const pageTitles = {
-      pageMonitoring: 'Patient Monitoring',
+      pageHealthData: 'Fleet Health Data',
+      pageMonitoring: 'Device Details & AI Snapshot',
       pageTrends: 'Longitudinal Trends',
       pageObservations: 'Clinical Observations',
       pageReports: 'Reports',
-      pageQuality: 'Data Quality',
+      pageQuality: 'Data Quality & Signals',
       pageFhir: 'FHIR / Integrations',
       pageSettings: 'Settings',
     };
@@ -237,8 +251,23 @@ class ClinicalDashboard {
   //  SOURCE MODE TOGGLE
   // ═══════════════════════════════════════════════════════════════════════════
   _initSourceModeToggle() {
+    const btnFleet = document.getElementById('btnModeFleet');
     const btnDemo = document.getElementById('btnModeDemo');
     const btnReal = document.getElementById('btnModeReal');
+
+    btnFleet?.addEventListener('click', () => {
+      if (this.mode === 'fleet') return;
+      this.mode = 'fleet';
+      btnFleet.classList.add('active');
+      btnDemo?.classList.remove('active');
+      btnReal?.classList.remove('active');
+      btnFleet.setAttribute('aria-pressed', 'true');
+      btnDemo?.setAttribute('aria-pressed', 'false');
+      btnReal?.setAttribute('aria-pressed', 'false');
+      this._toggleModeUI();
+      this._switchToPage('pageHealthData', 'Fleet Health Data');
+      this._renderFleetTable();
+    });
 
     btnDemo?.addEventListener('click', () => {
       if (this.mode === 'demo') return;
@@ -246,10 +275,13 @@ class ClinicalDashboard {
       this.simActive = false;
       this._origTelemetry = null;
       btnDemo.classList.add('active');
-      btnReal.classList.remove('active');
+      btnFleet?.classList.remove('active');
+      btnReal?.classList.remove('active');
       btnDemo.setAttribute('aria-pressed', 'true');
-      btnReal.setAttribute('aria-pressed', 'false');
+      btnFleet?.setAttribute('aria-pressed', 'false');
+      btnReal?.setAttribute('aria-pressed', 'false');
       this._toggleModeUI();
+      this._switchToPage('pageMonitoring', 'Patient Monitoring');
       this._runDemoAnalysis();
     });
 
@@ -258,14 +290,16 @@ class ClinicalDashboard {
       this.mode = 'real';
       this.simActive = false;
       btnReal.classList.add('active');
-      btnDemo.classList.remove('active');
+      btnFleet?.classList.remove('active');
+      btnDemo?.classList.remove('active');
       btnReal.setAttribute('aria-pressed', 'true');
-      btnDemo.setAttribute('aria-pressed', 'false');
+      btnFleet?.setAttribute('aria-pressed', 'false');
+      btnDemo?.setAttribute('aria-pressed', 'false');
       this._toggleModeUI();
+      this._switchToPage('pageMonitoring', 'Real Wearable Recording');
       if (this.currentRecordingId) {
         this._activateRealRecording(this.currentRecordingId);
       } else if (!this._bundledSessionLoading) {
-        // Auto-load the bundled S1-Final session on first activation
         this._loadBundledSession();
       }
     });
@@ -278,13 +312,23 @@ class ClinicalDashboard {
     const simBar    = document.getElementById('obsSimulationBar');
     const winLabel  = document.querySelector('#headerLastUpdated span');
 
-    if (this.mode === 'demo') {
+    const fleetGroup = document.getElementById('fleetSelectorGroup');
+    if (this.mode === 'fleet') {
+      fleetGroup?.classList.remove('hidden');
+      demoGroup?.classList.add('hidden');
+      realGroup?.classList.add('hidden');
+      simPanel?.classList.add('hidden');
+      document.getElementById('realDataBanner')?.classList.add('hidden');
+      if (winLabel) winLabel.textContent = '17 October 2026 GMT+5:30';
+    } else if (this.mode === 'demo') {
+      fleetGroup?.classList.add('hidden');
       demoGroup?.classList.remove('hidden');
       realGroup?.classList.add('hidden');
       simPanel?.classList.remove('hidden');
       document.getElementById('realDataBanner')?.classList.add('hidden');
       if (winLabel) winLabel.textContent = '14-day window';
     } else {
+      fleetGroup?.classList.add('hidden');
       demoGroup?.classList.add('hidden');
       realGroup?.classList.remove('hidden');
       simPanel?.classList.add('hidden');
@@ -2044,6 +2088,571 @@ class ClinicalDashboard {
       data = { patient: this.result.patient, baselineProfiles: this.result.baselineProfiles, observation: this.result.clinicalObservation };
     }
     this._downloadJSON(JSON.stringify(data, null, 2), `report-${Date.now()}.json`);
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  withThem FLEET METHODS (Slide 2, 4, 5, 6, 8)
+  // ═══════════════════════════════════════════════════════════════════════════
+  _initFleetView() {
+    const sel = document.getElementById('fleetWatchSelect');
+    if (sel) {
+      sel.addEventListener('change', (e) => {
+        this.selectedWatchId = e.target.value;
+        this._renderDeviceDetail(this.selectedWatchId);
+        this._switchToPage('pageMonitoring', 'Device Details & AI Snapshot');
+      });
+    }
+
+    const btnSearch = document.getElementById('btnFleetSearch');
+    const btnReset = document.getElementById('btnFleetReset');
+    const btnExport = document.getElementById('btnFleetExport');
+    const btnBackToFleet = document.getElementById('btnBackToFleet');
+
+    btnSearch?.addEventListener('click', () => {
+      const qDevice = (document.getElementById('filterDeviceId')?.value || '').toLowerCase();
+      const qNick = (document.getElementById('filterNickname')?.value || '').toLowerCase();
+      const qPhone = (document.getElementById('filterPhone')?.value || '').toLowerCase();
+
+      const filtered = this.fleetWatches.filter(w => {
+        const mDev = !qDevice || w.deviceId.toLowerCase().includes(qDevice);
+        const mNick = !qNick || w.nickname.toLowerCase().includes(qNick);
+        const mPhone = !qPhone || w.phone.toLowerCase().includes(qPhone);
+        return mDev && mNick && mPhone;
+      });
+      this._renderFleetTable(filtered);
+    });
+
+    btnReset?.addEventListener('click', () => {
+      const id1 = document.getElementById('filterDeviceId'); if (id1) id1.value = '';
+      const id2 = document.getElementById('filterNickname'); if (id2) id2.value = '';
+      const id3 = document.getElementById('filterPhone'); if (id3) id3.value = '';
+      this._renderFleetTable(this.fleetWatches);
+    });
+
+    btnExport?.addEventListener('click', () => {
+      let csv = 'Index,Nickname,Model,DeviceID,Status,HealthScore,Steps,HeartRate,SpO2,BodyTemp,Phone,DataTime,LastUpload\n';
+      this.fleetWatches.forEach((w, idx) => {
+        const temp = this.tempUnit === 'F' ? `${w.tempF} °F` : `${w.tempC} °C`;
+        csv += `${idx + 1},"${w.nickname}","${w.model}","${w.deviceId}","${w.status}",${w.healthScore},${w.steps || 'N/A'},${w.heartRate},${w.spo2},"${temp}","${w.phone}","${w.dataTime}","${w.lastUpload}"\n`;
+      });
+      this._downloadJSON(csv, `withthem-fleet-${Date.now()}.csv`);
+    });
+
+    btnBackToFleet?.addEventListener('click', () => {
+      this._switchToPage('pageHealthData', 'Fleet Health Data');
+    });
+
+    // Check connection button simulator
+    document.getElementById('btnCheckConn')?.addEventListener('click', () => {
+      alert(`Pinging LTE modem for watch ${this.selectedWatchId}... Response: Cell tower RSRP -98 dBm. Signal verified.`);
+    });
+  }
+
+  _renderFleetTable(list = this.fleetWatches) {
+    const tbody = document.getElementById('fleetTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    list.forEach((w, idx) => {
+      const tr = document.createElement('tr');
+      const tempVal = this.tempUnit === 'F' ? `${w.tempF} °F` : `${w.tempC} °C`;
+      const isOffline = w.status === 'offline';
+      
+      let scoreBadgeClass = 'score-stable';
+      if (w.healthScore < 60) scoreBadgeClass = 'score-needs-attention';
+      else if (w.healthScore >= 90) scoreBadgeClass = 'score-optimal';
+
+      tr.innerHTML = `
+        <td style="font-weight:600; color:var(--text-secondary);">${idx + 1}</td>
+        <td>
+          <a class="nickname-link" data-watch-id="${w.id}" title="Click to view device telemetry">${w.nickname}</a>
+        </td>
+        <td><span style="font-size:0.75rem; background:#F1F5F9; padding:2px 6px; border-radius:3px;">${w.model}</span></td>
+        <td style="font-family:monospace; font-size:0.78rem;">${w.deviceId}</td>
+        <td>
+          <span class="status-badge ${isOffline ? 'badge-offline' : 'badge-online'}">
+            ● ${w.status}
+          </span>
+          ${isOffline ? `<span class="badge-upload-warn">No upload 24h+</span>` : ''}
+        </td>
+        <td>
+          <span class="score-cell-pill ${scoreBadgeClass}">
+            ${w.healthScore} / 100 · ${w.healthStatus}
+          </span>
+        </td>
+        <td>${w.steps !== null && w.steps !== undefined ? w.steps.toLocaleString() : 'N/A'}</td>
+        <td style="font-weight:600;">${w.heartRate}</td>
+        <td>${w.spo2}%</td>
+        <td>${tempVal}</td>
+        <td>${w.phone || 'N/A'}</td>
+        <td style="font-size:0.76rem; color:var(--text-secondary);">${w.dataTime}</td>
+        <td style="font-size:0.76rem; color:var(--text-secondary);">${w.lastUpload}</td>
+        <td>
+          <button class="btn-ghost btn-small fleet-edit-btn" data-watch-id="${w.id}" style="padding:2px 6px; font-size:0.75rem;">Edit</button>
+        </td>
+        <td>
+          <button class="btn-primary-clinical btn-small fleet-view-btn" data-watch-id="${w.id}" style="padding:2px 8px; font-size:0.75rem;">View</button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+    // Attach click listeners to nickname links and view buttons
+    tbody.querySelectorAll('.nickname-link, .fleet-view-btn').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const id = el.getAttribute('data-watch-id');
+        this.selectedWatchId = id;
+        const watchSel = document.getElementById('fleetWatchSelect');
+        if (watchSel) watchSel.value = id;
+        this._renderDeviceDetail(id);
+        this._switchToPage('pageMonitoring', 'Device Details & AI Snapshot');
+      });
+    });
+
+    tbody.querySelectorAll('.fleet-edit-btn').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-watch-id');
+        const w = this.fleetWatches.find(x => x.id === id);
+        const newNick = prompt(`Edit nickname for device ${w.deviceId}:`, w.nickname);
+        if (newNick && newNick.trim()) {
+          w.nickname = newNick.trim();
+          this._renderFleetTable();
+          if (this.selectedWatchId === id) this._renderDeviceDetail(id);
+        }
+      });
+    });
+
+    // Update temp headers in table
+    document.querySelectorAll('.col-temp-unit').forEach(el => {
+      el.textContent = this.tempUnit === 'F' ? '°F' : '°C';
+    });
+  }
+
+  _renderDeviceDetail(watchId) {
+    const watch = this.fleetWatches.find(w => w.id === watchId) || this.fleetWatches[0];
+    
+    // Left profile card
+    const devAvatar = document.getElementById('devAvatarText');
+    if (devAvatar) devAvatar.textContent = watch.nickname.slice(0, 2).toUpperCase();
+    const devNick = document.getElementById('devNickname');
+    if (devNick) devNick.textContent = watch.nickname;
+    const devPill = document.getElementById('devStatusPill');
+    const devStatusTxt = document.getElementById('devStatusText');
+    if (devPill && devStatusTxt) {
+      if (watch.status === 'offline') {
+        devPill.className = 'device-status-pill device-status-offline';
+        devStatusTxt.textContent = 'offline';
+      } else {
+        devPill.className = 'device-status-pill device-status-online';
+        devStatusTxt.textContent = 'online';
+      }
+    }
+    const devImei = document.getElementById('devImeiCode');
+    if (devImei) devImei.textContent = watch.imei;
+    const devContact = document.getElementById('devEmergContact');
+    if (devContact) devContact.textContent = watch.emergencyContact;
+
+    // Specs
+    const sModel = document.getElementById('specModel'); if (sModel) sModel.textContent = watch.model;
+    const sFw = document.getElementById('specFirmware'); if (sFw) sFw.textContent = watch.firmware;
+    const sNet = document.getElementById('specNetwork'); if (sNet) sNet.textContent = watch.network;
+    const sOp = document.getElementById('specOperator'); if (sOp) sOp.textContent = watch.operator;
+    const sIcc = document.getElementById('specIccid'); if (sIcc) sIcc.textContent = watch.simIccid;
+    const sMac = document.getElementById('specMac'); if (sMac) sMac.textContent = watch.mac;
+    const sBat = document.getElementById('specBattery'); if (sBat) sBat.textContent = `${watch.battery}%`;
+    const sSig = document.getElementById('specSignal'); if (sSig) sSig.textContent = `${watch.signalDbm} dBm`;
+    const sSeen = document.getElementById('specLastSeen'); if (sSeen) sSeen.textContent = watch.lastUpload;
+    const sUp = document.getElementById('specLastUpload'); if (sUp) sUp.textContent = watch.lastUpload;
+    const sUp24 = document.getElementById('specUploads24'); if (sUp24) sUp24.textContent = watch.uploads24h;
+
+    // Top Warning Banner
+    const offlineAlert = document.getElementById('deviceOfflineAlert');
+    const alertTxt = document.getElementById('offlineAlertText');
+    const aBat = document.getElementById('alertBattery'); if (aBat) aBat.textContent = `${watch.battery}%`;
+    const aSig = document.getElementById('alertSignal'); if (aSig) aSig.textContent = `${watch.signalDbm} dBm`;
+
+    if (offlineAlert) {
+      if (watch.status === 'offline') {
+        offlineAlert.style.display = 'flex';
+        offlineAlert.style.background = '#FEF3C7';
+        offlineAlert.style.borderColor = '#FCD34D';
+        offlineAlert.style.color = '#92400E';
+        if (alertTxt) alertTxt.textContent = 'No upload from this watch in over 24 hours — check that it is charged and has network coverage.';
+      } else {
+        offlineAlert.style.display = 'flex';
+        offlineAlert.style.background = '#DEF7EC';
+        offlineAlert.style.borderColor = '#BCF0DA';
+        offlineAlert.style.color = '#03543F';
+        if (alertTxt) alertTxt.textContent = `Watch is active on LTE network (${watch.operator}). Telemetry streaming in real time.`;
+      }
+    }
+
+    // Snapshot Hero
+    const snapTitle = document.getElementById('snapshotTitle');
+    if (snapTitle) snapTitle.textContent = `AI Health Snapshot — ${watch.nickname}`;
+    const snapCategory = document.getElementById('snapshotCategory');
+    if (snapCategory) snapCategory.textContent = watch.category;
+    const snapScore = document.getElementById('snapshotScoreNum');
+    if (snapScore) snapScore.textContent = watch.healthScore;
+    const snapStatus = document.getElementById('snapshotScoreStatus');
+    if (snapStatus) {
+      snapStatus.textContent = watch.healthStatus;
+      if (watch.healthScore < 60) snapStatus.style.color = '#D97706';
+      else if (watch.healthScore >= 90) snapStatus.style.color = '#1E40AF';
+      else snapStatus.style.color = '#059669';
+    }
+
+    // Gauge Ring progress
+    const ring = document.getElementById('snapshotGaugeRing');
+    if (ring) {
+      const circumference = 264;
+      const offset = circumference - (circumference * watch.healthScore / 100);
+      ring.style.strokeDashoffset = offset;
+      ring.style.stroke = watch.healthScore < 60 ? '#D97706' : watch.healthScore >= 90 ? '#2563EB' : '#10B981';
+    }
+
+    // Stat cards
+    const snapHr = document.getElementById('snapStatHr');
+    if (snapHr) snapHr.innerHTML = `${watch.heartRate} bpm <span style="color:${watch.heartRate > 85 ? '#DC2626' : '#16A34A'}; font-size:1rem;">${watch.heartRate > 85 ? '↗' : '→'}</span>`;
+    const snapSafety = document.getElementById('snapStatSafety');
+    if (snapSafety) snapSafety.textContent = `${watch.alarmsCount} ${watch.alarmType || 'SOS / Falls'}`;
+    const snapDev = document.getElementById('snapStatDevice');
+    if (snapDev) {
+      snapDev.textContent = watch.status === 'offline' ? 'Offline >24h' : 'Online / Synced';
+      snapDev.style.color = watch.status === 'offline' ? '#DC2626' : '#16A34A';
+    }
+
+    // Render active module
+    this._renderActiveModule();
+  }
+
+  _initVerticalModuleNav() {
+    const rail = document.getElementById('verticalModuleRail');
+    if (!rail) return;
+
+    rail.querySelectorAll('.vertical-mod-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        rail.querySelectorAll('.vertical-mod-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.activeModule = btn.getAttribute('data-mod');
+        this._renderActiveModule();
+      });
+    });
+  }
+
+  _renderActiveModule() {
+    // Hide all module panels
+    const panels = [
+      'modPanelOverview',
+      'modPanelPressure',
+      'modPanelHeartRate',
+      'modPanelBloodPressure',
+      'modPanelBloodOxygen',
+      'modPanelBodyTemperature',
+      'modPanelSos',
+      'modPanelSleep',
+      'modPanelGeneric'
+    ];
+    panels.forEach(id => {
+      const p = document.getElementById(id);
+      if (p) p.style.display = 'none';
+    });
+
+    const mod = this.activeModule;
+    if (mod === 'Overview') {
+      const p = document.getElementById('modPanelOverview');
+      if (p) p.style.display = 'block';
+    } else if (mod === 'Pressure Value') {
+      const p = document.getElementById('modPanelPressure');
+      if (p) p.style.display = 'block';
+      this._renderPressureChart();
+    } else if (mod === 'Heart Rate') {
+      const p = document.getElementById('modPanelHeartRate');
+      if (p) p.style.display = 'block';
+      this._renderHrChart();
+    } else if (mod === 'Blood Pressure') {
+      const p = document.getElementById('modPanelBloodPressure');
+      if (p) p.style.display = 'block';
+      this._renderBpChart();
+    } else if (mod === 'Blood Oxygen') {
+      const p = document.getElementById('modPanelBloodOxygen');
+      if (p) p.style.display = 'block';
+      this._renderSpo2Chart();
+    } else if (mod === 'Body Temperature') {
+      const p = document.getElementById('modPanelBodyTemperature');
+      if (p) p.style.display = 'block';
+      this._renderTempChart();
+    } else if (mod === 'SOS & Falls') {
+      const p = document.getElementById('modPanelSos');
+      if (p) p.style.display = 'block';
+      this._renderSosList();
+    } else if (mod === 'Sleep') {
+      const p = document.getElementById('modPanelSleep');
+      if (p) p.style.display = 'block';
+    } else {
+      const p = document.getElementById('modPanelGeneric');
+      if (p) {
+        p.style.display = 'block';
+        const title = document.getElementById('genericModuleTitle');
+        const desc = document.getElementById('genericModuleDesc');
+        if (title) title.textContent = mod;
+        if (desc) desc.textContent = `Continuous ${mod} signals transmitted from ${this.selectedWatchId} via LTE telemetry.`;
+      }
+    }
+  }
+
+  _renderPressureChart() {
+    const canvas = document.getElementById('pressureChartCanvas');
+    if (!canvas) return;
+
+    if (this.moduleCharts.pressure) {
+      this.moduleCharts.pressure.destroy();
+    }
+
+    const curve = this.prasunData.stress.curve;
+    const labels = curve.map(c => c.time);
+    const data = curve.map(c => c.value);
+
+    this.moduleCharts.pressure = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Stress / Pressure Value',
+          data: data,
+          borderColor: '#0284C7',
+          backgroundColor: 'rgba(2, 132, 199, 0.08)',
+          borderWidth: 2.5,
+          tension: 0.35,
+          fill: true,
+          pointBackgroundColor: '#0284C7',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `Pressure Value: ${ctx.parsed.y} (Normal Range 0-60)`
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: { stepSize: 20, font: { size: 10 } },
+            grid: { color: 'rgba(0,0,0,0.05)' }
+          },
+          x: {
+            ticks: { font: { size: 10 } },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  _renderHrChart() {
+    const canvas = document.getElementById('hrChartCanvas');
+    if (!canvas) return;
+
+    if (this.moduleCharts.hr) {
+      this.moduleCharts.hr.destroy();
+    }
+
+    const hrData = this.prasunData.signals.RESTING_HR.slice(0, 50);
+    const labels = hrData.map(d => d.timestamp.split('T')[0].slice(5) + ' ' + d.timestamp.split('T')[1].slice(0, 5));
+    const values = hrData.map(d => d.value);
+
+    this.moduleCharts.hr = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Heart Rate (bpm)',
+          data: values,
+          borderColor: '#DC2626',
+          backgroundColor: 'rgba(220, 38, 38, 0.08)',
+          borderWidth: 2,
+          tension: 0.2,
+          fill: true,
+          pointRadius: 2.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 50, max: 120, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { ticks: { maxTicksLimit: 10, font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  _renderBpChart() {
+    const canvas = document.getElementById('bpChartCanvas');
+    if (!canvas) return;
+
+    if (this.moduleCharts.bp) {
+      this.moduleCharts.bp.destroy();
+    }
+
+    const sbp = this.prasunData.signals.SYSTOLIC_BP.slice(0, 50);
+    const dbp = this.prasunData.signals.DIASTOLIC_BP.slice(0, 50);
+    const labels = sbp.map(d => d.timestamp.split('T')[0].slice(5) + ' ' + d.timestamp.split('T')[1].slice(0, 5));
+
+    this.moduleCharts.bp = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Systolic BP (mmHg)',
+            data: sbp.map(d => d.value),
+            borderColor: '#7C3AED',
+            backgroundColor: 'rgba(124, 58, 237, 0.05)',
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 2.5
+          },
+          {
+            label: 'Diastolic BP (mmHg)',
+            data: dbp.map(d => d.value),
+            borderColor: '#2563EB',
+            backgroundColor: 'rgba(37, 99, 235, 0.05)',
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 2.5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 60, max: 170, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { ticks: { maxTicksLimit: 10, font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  _renderSpo2Chart() {
+    const canvas = document.getElementById('spo2ChartCanvas');
+    if (!canvas) return;
+
+    if (this.moduleCharts.spo2) {
+      this.moduleCharts.spo2.destroy();
+    }
+
+    const spo2 = this.prasunData.signals.SPO2.slice(0, 50);
+    const labels = spo2.map(d => d.timestamp.split('T')[0].slice(5) + ' ' + d.timestamp.split('T')[1].slice(0, 5));
+
+    this.moduleCharts.spo2 = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'SpO2 (%)',
+          data: spo2.map(d => d.value),
+          borderColor: '#059669',
+          backgroundColor: 'rgba(5, 150, 105, 0.08)',
+          borderWidth: 2,
+          tension: 0.2,
+          pointRadius: 2.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 90, max: 100, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { ticks: { maxTicksLimit: 10, font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  _renderTempChart() {
+    const canvas = document.getElementById('tempChartCanvas');
+    if (!canvas) return;
+
+    if (this.moduleCharts.temp) {
+      this.moduleCharts.temp.destroy();
+    }
+
+    const temp = this.prasunData.signals.TEMPERATURE.slice(0, 50);
+    const labels = temp.map(d => d.timestamp.split('T')[0].slice(5) + ' ' + d.timestamp.split('T')[1].slice(0, 5));
+    const values = temp.map(d => this.tempUnit === 'F' ? cToF(d.value) : d.value);
+
+    this.moduleCharts.temp = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `Temperature (${this.tempUnit === 'F' ? '°F' : '°C'})`,
+          data: values,
+          borderColor: '#EA580C',
+          backgroundColor: 'rgba(234, 88, 12, 0.08)',
+          borderWidth: 2,
+          tension: 0.2,
+          pointRadius: 2.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: this.tempUnit === 'F' ? 95 : 35,
+            max: this.tempUnit === 'F' ? 102 : 39,
+            grid: { color: 'rgba(0,0,0,0.05)' }
+          },
+          x: { ticks: { maxTicksLimit: 10, font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  _renderSosList() {
+    const container = document.getElementById('sosEventList');
+    if (!container) return;
+    container.innerHTML = '';
+
+    this.prasunData.safetyEvents.forEach(evt => {
+      const item = document.createElement('div');
+      item.style.cssText = 'background:#FFF1F2; border:1px solid #FECDD3; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;';
+      item.innerHTML = `
+        <div>
+          <span style="font-size:0.75rem; font-weight:700; color:#BE123C; background:#FFE4E6; padding:2px 6px; border-radius:3px;">${evt.id}</span>
+          <strong style="font-size:0.84rem; color:#881337; margin-left:6px;">${evt.type}</strong>
+          <div style="font-size:0.75rem; color:#9F1239; margin-top:3px;">${evt.action}</div>
+        </div>
+        <div style="font-size:0.78rem; font-weight:600; color:#BE123C;">${evt.timestamp}</div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  _switchToPage(pageId, pageTitle) {
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    const p = document.getElementById(pageId);
+    if (p) p.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'active-indicator'));
+    const navBtn = document.querySelector(`.nav-item[data-page="${pageId === 'pageHealthData' ? 'healthData' : 'monitoring'}"]`);
+    if (navBtn) navBtn.classList.add('active-indicator');
+
+    const titleEl = document.getElementById('currentPageTitle');
+    if (titleEl) titleEl.textContent = pageTitle;
   }
 
   _downloadJSON(json, filename) {
