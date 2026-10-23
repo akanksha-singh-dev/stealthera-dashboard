@@ -239,8 +239,95 @@ export const DR_PRASUN_RAW_CSV = `timestamp,heart_rate_bpm,spo2_pct,systolic_bp_
 2026-10-15T19:00:00+05:30,80,98,125,80,36.4,DR001,Dr. Prasun 1,BP100CH,Evening
 2026-10-15T20:00:00+05:30,75,98,120,77,36.3,DR001,Dr. Prasun 1,BP100CH,Evening resting`;
 
-export function parseDrPrasunTelemetry() {
-  const lines = DR_PRASUN_RAW_CSV.trim().split('\n');
+/**
+ * Physiological validation bounds for clinical smart wearables.
+ * Used for artifact rejection, sensor disconnect flagging, and quality score computation.
+ */
+export const PHYSIOLOGICAL_BOUNDS = {
+  RESTING_HR: { min: 30, max: 220, unit: 'bpm', label: 'Heart Rate' },
+  SPO2: { min: 70, max: 100, unit: '%', label: 'Blood Oxygen (SpO₂)' },
+  SYSTOLIC_BP: { min: 60, max: 240, unit: 'mmHg', label: 'Systolic BP' },
+  DIASTOLIC_BP: { min: 30, max: 140, unit: 'mmHg', label: 'Diastolic BP' },
+  TEMPERATURE: { min: 30.0, max: 42.5, unit: '°C', label: 'Skin Temperature' },
+  STRESS: { min: 0, max: 100, unit: 'index', label: 'Stress Index' }
+};
+
+/**
+ * Validates a single telemetry data point against clinical physiological boundaries.
+ * @param {string} signalKey - Key corresponding to PHYSIOLOGICAL_BOUNDS
+ * @param {number|string} value - Raw measurement value
+ * @returns {{ valid: boolean, reason?: string, value?: number }}
+ */
+export function validateTelemetryPoint(signalKey, value) {
+  const bounds = PHYSIOLOGICAL_BOUNDS[signalKey];
+  if (!bounds) return { valid: true, value: Number(value) };
+  if (value === null || value === undefined || isNaN(Number(value))) {
+    return { valid: false, reason: 'MISSING_OR_NAN' };
+  }
+  const num = Number(value);
+  if (num < bounds.min) {
+    return { valid: false, reason: `BELOW_MIN_${bounds.min}_${bounds.unit}`, value: num };
+  }
+  if (num > bounds.max) {
+    return { valid: false, reason: `ABOVE_MAX_${bounds.max}_${bounds.unit}`, value: num };
+  }
+  return { valid: true, value: num };
+}
+
+/**
+ * Validates blood pressure pair (checks individual bounds and ensures SBP > DBP).
+ * @param {number|string} sbp - Systolic BP
+ * @param {number|string} dbp - Diastolic BP
+ * @returns {{ valid: boolean, reason?: string, sbp?: number, dbp?: number }}
+ */
+export function validateBloodPressurePair(sbp, dbp) {
+  const sbpVal = validateTelemetryPoint('SYSTOLIC_BP', sbp);
+  const dbpVal = validateTelemetryPoint('DIASTOLIC_BP', dbp);
+  if (!sbpVal.valid || !dbpVal.valid) {
+    return { valid: false, reason: 'INDIVIDUAL_BP_INVALID', sbpVal, dbpVal };
+  }
+  if (Number(sbp) <= Number(dbp)) {
+    return { valid: false, reason: 'SBP_MUST_EXCEED_DBP', sbp: Number(sbp), dbp: Number(dbp) };
+  }
+  return { valid: true, sbp: Number(sbp), dbp: Number(dbp) };
+}
+
+/**
+ * Validates device identifiers (IMEI, MAC, Phone).
+ * @param {{ imei?: string, mac?: string, phone?: string }} identifiers
+ * @returns {Record<string, { valid: boolean, value: string, type: string }>}
+ */
+export function validateDeviceIdentifiers({ imei, mac, phone } = {}) {
+  const results = {};
+  if (imei !== undefined) {
+    const s = String(imei).trim();
+    results.imei = {
+      valid: /^\d{15}$/.test(s),
+      value: s,
+      type: 'IMEI (15 numeric digits)'
+    };
+  }
+  if (mac !== undefined) {
+    const s = String(mac).trim();
+    results.mac = {
+      valid: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(s),
+      value: s,
+      type: 'MAC (Standard 6-octet hex)'
+    };
+  }
+  if (phone !== undefined) {
+    const s = String(phone).trim();
+    results.phone = {
+      valid: /^[+0-9\s\-()]{7,20}$/.test(s),
+      value: s,
+      type: 'E.164 / International Phone'
+    };
+  }
+  return results;
+}
+
+export function parseDrPrasunTelemetry(rawCsv = DR_PRASUN_RAW_CSV) {
+  const lines = rawCsv.trim().split('\n');
   const header = lines[0].split(',');
   
   const hr = [];
@@ -249,25 +336,88 @@ export function parseDrPrasunTelemetry() {
   const dbp = [];
   const temp = [];
 
-  for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(',');
-    if (parts.length < 6) continue;
-    const ts = parts[0];
-    const hrVal = parseFloat(parts[1]);
-    const spo2Val = parseFloat(parts[2]);
-    const sbpVal = parseFloat(parts[3]);
-    const dbpVal = parseFloat(parts[4]);
-    const tempVal = parseFloat(parts[5]);
+  const quality = {
+    RESTING_HR: { total: 0, valid: 0, rejected: 0, rejectedReasons: [] },
+    SPO2: { total: 0, valid: 0, rejected: 0, rejectedReasons: [] },
+    SYSTOLIC_BP: { total: 0, valid: 0, rejected: 0, rejectedReasons: [] },
+    DIASTOLIC_BP: { total: 0, valid: 0, rejected: 0, rejectedReasons: [] },
+    TEMPERATURE: { total: 0, valid: 0, rejected: 0, rejectedReasons: [] }
+  };
 
-    if (!isNaN(hrVal)) hr.push({ timestamp: ts, value: hrVal });
-    if (!isNaN(spo2Val)) spo2.push({ timestamp: ts, value: spo2Val });
-    if (!isNaN(sbpVal)) sbp.push({ timestamp: ts, value: sbpVal });
-    if (!isNaN(dbpVal)) dbp.push({ timestamp: ts, value: dbpVal });
-    if (!isNaN(tempVal)) temp.push({ timestamp: ts, value: tempVal });
+  let totalRows = 0;
+  let validRows = 0;
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const parts = line.split(',');
+    if (parts.length < 6) continue;
+    totalRows++;
+
+    const ts = parts[0];
+    const rawHr = parseFloat(parts[1]);
+    const rawSpo2 = parseFloat(parts[2]);
+    const rawSbp = parseFloat(parts[3]);
+    const rawDbp = parseFloat(parts[4]);
+    const rawTemp = parseFloat(parts[5]);
+
+    // Validation checks
+    const vHr = validateTelemetryPoint('RESTING_HR', rawHr);
+    quality.RESTING_HR.total++;
+    if (vHr.valid) {
+      quality.RESTING_HR.valid++;
+      hr.push({ timestamp: ts, value: vHr.value });
+    } else {
+      quality.RESTING_HR.rejected++;
+      quality.RESTING_HR.rejectedReasons.push({ timestamp: ts, reason: vHr.reason });
+    }
+
+    const vSpo2 = validateTelemetryPoint('SPO2', rawSpo2);
+    quality.SPO2.total++;
+    if (vSpo2.valid) {
+      quality.SPO2.valid++;
+      spo2.push({ timestamp: ts, value: vSpo2.value });
+    } else {
+      quality.SPO2.rejected++;
+      quality.SPO2.rejectedReasons.push({ timestamp: ts, reason: vSpo2.reason });
+    }
+
+    const vBp = validateBloodPressurePair(rawSbp, rawDbp);
+    quality.SYSTOLIC_BP.total++;
+    quality.DIASTOLIC_BP.total++;
+    if (vBp.valid) {
+      quality.SYSTOLIC_BP.valid++;
+      quality.DIASTOLIC_BP.valid++;
+      sbp.push({ timestamp: ts, value: vBp.sbp });
+      dbp.push({ timestamp: ts, value: vBp.dbp });
+    } else {
+      quality.SYSTOLIC_BP.rejected++;
+      quality.DIASTOLIC_BP.rejected++;
+      quality.SYSTOLIC_BP.rejectedReasons.push({ timestamp: ts, reason: vBp.reason });
+    }
+
+    const vTemp = validateTelemetryPoint('TEMPERATURE', rawTemp);
+    quality.TEMPERATURE.total++;
+    if (vTemp.valid) {
+      quality.TEMPERATURE.valid++;
+      temp.push({ timestamp: ts, value: vTemp.value });
+    } else {
+      quality.TEMPERATURE.rejected++;
+      quality.TEMPERATURE.rejectedReasons.push({ timestamp: ts, reason: vTemp.reason });
+    }
+
+    if (vHr.valid && vSpo2.valid && vBp.valid && vTemp.valid) {
+      validRows++;
+    }
   }
 
+  // Calculate coverage percentages
+  Object.keys(quality).forEach(sig => {
+    const s = quality[sig];
+    s.coveragePercent = s.total > 0 ? Number(((s.valid / s.total) * 100).toFixed(1)) : 0;
+  });
+
   // Generate Stress / Pressure values (matches slide 5 & 6)
-  // 2026-10-15 hourly curve with average 31, peak 38 at 12:02, latest 23 at 18:02
   const stressCurve = [
     { time: '10:02', value: 38 },
     { time: '11:02', value: 24 },
@@ -313,6 +463,16 @@ export function parseDrPrasunTelemetry() {
       { id: 'SOS-04', timestamp: '16 Oct, 08:44', type: 'SOS Repeat Alert', action: 'Secondary escalation triggered' },
       { id: 'SOS-05', timestamp: '16 Oct, 08:47', type: 'SOS Repeat Alert', action: 'Tertiary priority escalation' },
       { id: 'SOS-06', timestamp: '16 Oct, 08:49', type: 'Watch Power / Signal Loss', action: 'Watch offline >24h transition' }
-    ]
+    ],
+    validationSummary: {
+      totalRows,
+      validRows,
+      invalidRows: totalRows - validRows,
+      overallCoveragePercent: totalRows > 0 ? Number(((validRows / totalRows) * 100).toFixed(1)) : 0,
+      signalQuality: quality,
+      auditStatus: 'VALIDATED_PHYSIOLOGICAL',
+      auditTimestamp: new Date().toISOString()
+    }
   };
 }
+

@@ -3510,3 +3510,90 @@ body {
   color: #64748B;
   font-weight: 500;
 }
+
+/* Telemetry & Device Validation Badges */
+.badge-valid-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.badge-invalid-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.validation-audit-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-top: 18px;
+}
+
+.validation-audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.validation-audit-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.validation-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.validation-audit-cell {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.validation-audit-cell-label {
+  font-size: 0.72rem;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.validation-audit-cell-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
