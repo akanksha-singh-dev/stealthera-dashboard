@@ -3597,3 +3597,62 @@ body {
   align-items: center;
   gap: 6px;
 }
+
+/* Validation Summary Banner on Health Data View */
+.validation-summary-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.validation-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.validation-banner-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #166534;
+}
+
+.validation-icon-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #22C55E;
+  color: #FFFFFF;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.btn-validation-audit {
+  background: #FFFFFF;
+  border: 1px solid #86EFAC;
+  color: #15803D;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-validation-audit:hover {
+  background: #DCFCE7;
+  border-color: #22C55E;
+}

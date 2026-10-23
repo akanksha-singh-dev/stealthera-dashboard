@@ -2301,6 +2301,11 @@ class ClinicalDashboard {
       this._switchToPage('pageHealthData', 'Fleet Health Data');
     });
 
+    document.getElementById('btnGoToQuality')?.addEventListener('click', () => {
+      this._switchToPage('pageQuality', 'Data Quality & Signals');
+      this._renderQualityPage();
+    });
+
     // Check connection button simulator
     document.getElementById('btnCheckConn')?.addEventListener('click', () => {
       alert(`Pinging LTE modem for watch ${this.selectedWatchId}... Response: Cell tower RSRP -98 dBm. Signal verified.`);
@@ -2827,7 +2832,18 @@ class ClinicalDashboard {
     if (p) p.classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'active-indicator'));
-    const navBtn = document.querySelector(`.nav-item[data-page="${pageId === 'pageHealthData' ? 'healthData' : 'monitoring'}"]`);
+    const navMap = {
+      pageHealthData: 'healthData',
+      pageMonitoring: 'monitoring',
+      pageTrends: 'trends',
+      pageObservations: 'observations',
+      pageReports: 'reports',
+      pageQuality: 'quality',
+      pageFhir: 'fhir',
+      pageSettings: 'settings'
+    };
+    const key = navMap[pageId] || 'healthData';
+    const navBtn = document.querySelector(`.nav-item[data-page="${key}"]`);
     if (navBtn) navBtn.classList.add('active-indicator');
 
     const titleEl = document.getElementById('currentPageTitle');

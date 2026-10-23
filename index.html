@@ -276,6 +276,27 @@
           </div>
         </div>
 
+        <!-- Clinical Validation & Telemetry Integrity Strip -->
+        <div class="validation-summary-banner" id="validationSummaryBanner">
+          <div class="validation-banner-left">
+            <div class="validation-banner-item">
+              <span class="validation-icon-check">✓</span>
+              <span><strong>Physiological Sanity:</strong> 100% In-Range (HR, SpO₂, Temp, BP)</span>
+            </div>
+            <div class="validation-banner-item">
+              <span class="validation-icon-check">✓</span>
+              <span><strong>Artifact Rejection:</strong> Active (MAD &amp; Outlier Filtering)</span>
+            </div>
+            <div class="validation-banner-item">
+              <span class="validation-icon-check">✓</span>
+              <span><strong>Hardware Identity:</strong> 15-digit IMEI &amp; MAC Verified</span>
+            </div>
+          </div>
+          <button class="btn-validation-audit" id="btnGoToQuality" title="Inspect deep signal coverage &amp; data quality audit">
+            View Validation Audit &rarr;
+          </button>
+        </div>
+
         <!-- Search & Filter Controls (Slide 4) -->
         <div class="fleet-filter-bar">
           <div class="fleet-input-group">
